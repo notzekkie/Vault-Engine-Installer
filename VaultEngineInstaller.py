@@ -8,6 +8,7 @@ import shutil
 import sys
 import ctypes
 
+# i got a glock in my rari, 17 shots no 38 
 github_repo_url = "https://github.com/Vault-Software-Team/Vault-Engine/archive/refs/heads/main.zip"
 
 def is_admin():
@@ -35,7 +36,6 @@ def download_and_install():
     try:
         progress_bar.start()
         
-        # Download the repository
         response = requests.get(github_repo_url, stream=True)
         response.raise_for_status()
         total_size = int(response.headers.get('content-length', 0))
@@ -46,26 +46,22 @@ def download_and_install():
                 if chunk:
                     file.write(chunk)
                     downloaded_size += len(chunk)
-                    progress_bar['value'] = (downloaded_size / total_size) * 50  # 50% for download
+                    progress_bar['value'] = (downloaded_size / total_size) * 50
                     root.update_idletasks()
         
-        # Extract the ZIP
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_ref.extractall(install_path)
         
         extracted_folder = os.path.join(install_path, "Vault-Engine-main")
         build_script = os.path.join(extracted_folder, "windows", "build.sh")
         
-        # Run the build script
         subprocess.run(["bash", build_script], cwd=extracted_folder, check=True)
         
-        progress_bar['value'] = 100  # Complete
+        progress_bar['value'] = 100
         root.update_idletasks()
         
-        # Clean up
         os.remove(zip_path)
         
-        # Create shortcuts if selected
         if start_menu_var.get():
             create_shortcut(extracted_folder, "Start Menu")
         if desktop_var.get():
@@ -77,6 +73,7 @@ def download_and_install():
     finally:
         progress_bar.stop()
 
+# im like hey shes fine wonder when she'll be mine
 def create_shortcut(target_folder, location):
     exe_path = os.path.join(target_folder, "VaultEngine.exe")
     icon_path = os.path.join(target_folder, "vEngineIcon.png")
@@ -101,7 +98,6 @@ def browse_path():
     if folder_selected:
         path_var.set(folder_selected)
 
-# GUI setup
 root = tk.Tk()
 root.title("Vault Engine Installer")
 root.geometry("400x300")
